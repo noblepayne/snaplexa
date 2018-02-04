@@ -10,6 +10,21 @@
 
 (defonce server (atom nil))
 
+(defonce user-data (atom {}))
+
+(defn play-episode [msg error-msg response token]
+  (fn [episode-url]
+    (if episode-url
+      (doto response
+        (.say msg)
+        (.audioPlayerPlayStream
+         "REPLACE_ALL"
+         #js {:url episode-url
+              :token token
+              :offsetInMilliseconds 0}))
+      (.say response
+            (str error-msg)))))
+
 (defn configure-app
   "Configure alexa integrations. Returns alexa app."
   [alexa-app express-app]
@@ -21,31 +36,20 @@
      (fn [request response]
        (-> (feed/get-episode :latest)
            (p/then
-            (fn [url]
-              (.say response "Playing the latest episode of tech snap")
-              (.audioPlayerPlayStream
-               response
-               "REPLACE_ALL"
-               #js {:url url
-                    :token "latest"
-                    :offsetInMilliseconds 0}))))))
+            (play-episode "Playing the latest episode of tech snap"
+                          "Sorry. I could not play tech snap. Please visit tech snap dot systems for other ways to listen."
+                          response
+                          "latest")))))
     (.intent
      "play"
      (fn [request response]
        (let [episode (.slot request "episode")]
          (-> (feed/get-episode (js/parseInt episode))
              (p/then
-              (fn [url]
-                (if url
-                  (do
-                    (.say response (str "Playing tech snap episode " episode))
-                    (.audioPlayerPlayStream
-                     response
-                     "REPLACE_ALL"
-                     #js {:url url
-                          :token (str "ep" episode)
-                          :offsetInMilliseconds 0}))
-                  (.say response (str "Sorry. I could not find episode " episode ". Please visit tech snap dot systems for some other great episodes.")))))))))
+              (play-episode (str "Playing tech snap episode " episode)
+                            (str "Sorry. I could not find episode " episode ". Please visit tech snap dot systems for other ways to listen.")
+                            response
+                            (str "ep" episode)))))))
     (.intent
      "AMAZON.StopIntent"
      (fn [request response]

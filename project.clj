@@ -11,6 +11,8 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.9.946"]
                  [org.clojure/core.async  "0.3.443"]
+                 [org.clojure/spec.alpha "0.1.143"]
+                 [com.taoensso/timbre "4.10.0"]
                  [funcool/tubax "0.2.0"]
                  [funcool/cats "2.2.0"]
                  [funcool/promesa "1.9.0"]]
@@ -58,7 +60,7 @@
                            :main snaplexa.core
                            :optimizations :advanced
                            :pretty-print false
-                           :install-deps true
+                           :install-deps false
                            :npm-deps {:express            "4.16.2"
                                       :alexa-app          "4.2.0"
                                       :request            "2.83.0"

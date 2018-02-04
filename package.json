@@ -2,13 +2,10 @@
   "dependencies": {
     "@cljs-oss/module-deps": "^1.1.1",
     "alexa-app": "^4.2.0",
-    "eventsource": "^1.0.5",
     "express": "^4.16.2",
-    "got": "^8.0.3",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "source-map-support": "^0.5.3",
-    "websocket": "^1.0.25",
     "ws": "^4.0.0"
   }
 }
